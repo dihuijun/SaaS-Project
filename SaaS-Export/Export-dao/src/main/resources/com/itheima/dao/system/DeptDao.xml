@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.system.DeptDao">
+    
+    <resultMap id="BaseResultMap" type="com.itheima.domain.system.Dept">
+        <id property="id" column="dept_id"/>
+        <!--其他字段-->
+        <result column="dept_name" property="deptName"/>
+        <result column="state" property="state"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+        
+        <!--一对一（就是少对少，查询所有部门的时候顺带将其上属部门查询出来）-->
+        <association property="parent" column="parent_id" javaType="com.itheima.domain.system.Dept" 
+                     select="findById"/>
+    </resultMap>
+    
+    <!--根据企业id查询全部部门-->
+    <select id="findAllDept" parameterType="String" resultMap="BaseResultMap">
+        select * from pe_dept where company_id=#{companyID}
+    </select>
+
+    <!--查询所有部门的时候将其上属部门也查询出来-->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from pe_dept where dept_id=#{id}
+    </select>
+
+    <!--新增部门-->
+    <insert id="saveDept">
+        insert into pe_dept(
+        dept_id,dept_name,parent_id,state,company_id,company_name
+        )values (
+        #{id},#{deptName},#{parent.id},#{state},#{companyId},#{companyName}
+        )
+    </insert>
+
+    <!--删除部门-->
+    <delete id="deleteDept" parameterType="com.itheima.domain.system.Dept">
+        delete from pe_dept where dept_id=#{id}
+    </delete>
+
+    <!--修改部门-->
+    <update id="updateDept" parameterType="com.itheima.domain.system.Dept">
+        update pe_dept set
+        dept_name=#{deptName},parent_id=#{parent.id},state=#{state},company_id=#{companyId},company_name=#{companyName}
+        where dept_id=#{id}
+    </update>
+
+    <select id="findDeptById" parameterType="string" resultMap="BaseResultMap">
+        select * from pe_dept where dept_id=#{id}
+    </select>
+</mapper>

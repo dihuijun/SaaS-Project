@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.system.RoleDao">
+
+    <resultMap id="BaseResultMap" type="com.itheima.domain.system.Role">
+        <id property="id" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createDept" column="create_dept"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="companyId" column="company_id"/>
+        <result property="companyName" column="company_name"/>
+    </resultMap>
+
+    <!--查询所有角色，分页显示-->
+    <select id="findAllRoles" resultMap="BaseResultMap">
+        select * from pe_role where company_id=#{companyId}
+    </select>
+
+    <!--根据id去查询角色，回显数据用来修改-->
+    <select id="findRoleById" resultMap="BaseResultMap">
+        select *from pe_role where role_id=#{id}
+    </select>
+    <!--插入新的角色-->
+    <insert id="saveRole" parameterType="com.itheima.domain.system.Role">
+        insert into pe_role (
+        role_id, name, remark, order_no,company_id, company_name
+        )values (
+        #{id}, #{name}, #{remark}, #{orderNo}, #{companyId}, #{companyName}
+        )
+    </insert>
+
+    <!--修改角色-->
+    <update id="updateRole" parameterType="com.itheima.domain.system.Role">
+        update pe_role
+        set name = #{name},
+          remark = #{remark},
+          order_no = #{orderNo}
+        where role_id = #{id}
+    </update>
+
+    <!--删除角色-->
+    <delete id="deleteRole" parameterType="string">
+        delete from pe_role where role_id=#{id}
+    </delete>
+
+    <!--根据id查询角色信息-->
+    <select id="findUserRoles" parameterType="string" resultMap="BaseResultMap">
+        SELECT pe_role.* FROM pe_role_user
+	        INNER JOIN pe_role ON pe_role_user.role_id=pe_role.role_id
+        WHERE user_id=#{id}
+    </select>
+
+    <delete id="deleteRoleByUserId" parameterType="string">
+        DELETE FROM pe_role_user WHERE user_id = #{userid}
+    </delete>
+
+
+    <insert id="insertUserRole" parameterType="map">
+        insert into pe_role_user (user_id,role_id)
+        values (#{userId},#{roleId})
+    </insert>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <context:component-scan base-package="com.itheima.web"></context:component-scan>
+
+	<!--视图解析器-->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!--异常处理-->
+	<bean class="com.itheima.web.exceptions.CustomExceptionResolver"/>
+
+	<!--日期格式转换-->
+	<bean class="org.springframework.context.support.ConversionServiceFactoryBean" id="conversionService">
+		<property name="converters">
+			<set>
+				<bean class="com.itheima.web.converter.StringToDateConverter"></bean>
+			</set>
+		</property>
+	</bean>
+
+	<!--七牛云配置文件-->
+	<!-- id 的值是固定的-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设置上传文件的最大尺寸为 5MB -->
+		<property name="maxUploadSize">
+			<value>5242880</value>
+		</property>
+	</bean>
+
+	<!--mvc annotaton-->
+	<mvc:annotation-driven conversion-service="conversionService">
+		<!-- 消息转换器 -->
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes" value="text/plain;charset=UTF-8"/>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+
+	<!--开启aop的注解支持-->
+	<aop:aspectj-autoproxy/>
+
+	<dubbo:application name="Export-web">
+		<dubbo:parameter key="qos.enable" value="false"></dubbo:parameter>
+	</dubbo:application>
+
+	<dubbo:registry address="zookeeper://127.0.0.1:2181" ></dubbo:registry>
+
+	<dubbo:annotation package="com.itheima.web"></dubbo:annotation>
+
+	<dubbo:consumer check="false"></dubbo:consumer>
+
+</beans>
