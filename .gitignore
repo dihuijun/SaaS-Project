@@ -1,0 +1,56 @@
+.settings
+*.class
+
+#huojian
+rebel.xml
+
+# Windows
+[Dd]esktop.ini
+Thumbs.db
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+# Node.js
+node_modules/
+# Ant
+local.properties
+# Ant
+local.properties
+
+# Maven
+target/
+release.properties
+
+# Eclipse
+.classpath
+.project
+.externalToolBuilders/
+.metadata
+.settings
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+target
+# Mac
+.DS_Store
+
+.settings
+.project
+.classpath	
+*.class
+.idea
+rebel.xml
+# gitignore
+.gitignore
+.idea
